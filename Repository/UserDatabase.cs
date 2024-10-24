@@ -8,19 +8,33 @@ using webUserLoginTest.Util;
 
 namespace BATTARI_api.Repository;
 
-public class UserDatabase(UserContext userContext) : IUserRepository
+public class UserDatabase
+(UserContext userContext) : IUserRepository
 {
     const string _pepper = "BATTARI";
     private UserContext _userContext = userContext;
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     public async Task<UserModel?> GetUser(int id)
     {
         return await _userContext.Users.FindAsync(id);
+    }
+
+    public async Task<UserDto?> GetUserDto(int id)
+    {
+        UserModel? user = await _userContext.Users.FindAsync(id);
+        if (user == null)
+            return null;
+        return new UserDto()
+        {
+            UserId = user.UserId,
+            Name = user.Name,
+            Id = user.Id,
+        };
     }
 
     public async Task<UserModel?> CreateUser(UserModel userModel)
@@ -32,9 +46,9 @@ public class UserDatabase(UserContext userContext) : IUserRepository
         // {
         //     UserId = userRegisterModel.UserId,
         //     Name = userRegisterModel.Name,
-        //     PasswordHash = PasswordUtil.GetPasswordHashFromPepper(_salt, userRegisterModel.Password, _pepper),
-        //     PasswordSalt = _salt,
-        //     Created = _created
+        //     PasswordHash = PasswordUtil.GetPasswordHashFromPepper(_salt,
+        //     userRegisterModel.Password, _pepper), PasswordSalt = _salt, Created =
+        //     _created
         // };
 
         var result = await _userContext.AddAsync(userModel);
@@ -58,7 +72,8 @@ public class UserDatabase(UserContext userContext) : IUserRepository
         UserModel user;
         try
         {
-            user = await _userContext.Users.Where<UserModel>(x => x.UserId == userId).FirstAsync();
+            user = await _userContext.Users.Where<UserModel>(x => x.UserId == userId)
+                       .FirstAsync();
         }
         catch (InvalidOperationException e)
         {
@@ -94,12 +109,14 @@ public class UserDatabase(UserContext userContext) : IUserRepository
     }
 
     // edit
-    public async Task<UserModel?> ChangeNickname(string userId, string nickname)
+    public async Task<UserModel
+        ?> ChangeNickname(string userId, string nickname)
     {
         UserModel? user = null;
         try
         {
-            user = await _userContext.Users.Where<UserModel>(x => x.UserId == userId).FirstAsync();
+            user = await _userContext.Users.Where<UserModel>(x => x.UserId == userId)
+                       .FirstAsync();
         }
         catch (ArgumentNullException)
         {
@@ -113,7 +130,8 @@ public class UserDatabase(UserContext userContext) : IUserRepository
         {
             throw;
         }
-        if (user == null) return null;
+        if (user == null)
+            return null;
         user.Name = nickname;
         _userContext.Update(user);
         await _userContext.SaveChangesAsync();

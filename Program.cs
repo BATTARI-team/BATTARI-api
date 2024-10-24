@@ -44,6 +44,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserRepository, UserDatabase>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokensRepository, RefreshTokenDatabase>();
+builder.Services.AddScoped<IFriendRepository, FriendDatabase>();
 
 builder.Services.AddSwaggerGen(c =>
 {
