@@ -181,7 +181,7 @@ public class SouguuService : ISouguuService
         try
         {
             call = await _callRepository.AddCall(
-                souguuReason: reasonStr, callStartTime: DateTime.Now.AddSeconds(7),
+                souguuReason: reasonStr, callStartTime: DateTime.Now.AddSeconds(15),
                 user1: user1, user2: user2, souguuDateTime: DateTime.Now,
                 status: CallStatusEnum.Waiting);
             callDetail = _callingService.AddCall(
@@ -281,8 +281,8 @@ public class SouguuService : ISouguuService
         if (user1OnlineUser == null || user2OnlineUser == null)
             return;
         // 連続して遭遇しすぎないように20分間のタイムアウトを設ける
-        if (user1OnlineUser.LastSouguuTime > DateTime.Now.AddMinutes(-20) ||
-            user2OnlineUser.LastSouguuTime > DateTime.Now.AddMinutes(-20))
+        if (user1OnlineUser.LastSouguuTime > DateTime.Now.AddMinutes(-1) ||
+            user2OnlineUser.LastSouguuTime > DateTime.Now.AddMinutes(-1))
             return;
 
         SouguuReasonStatusEnum? result = null;
