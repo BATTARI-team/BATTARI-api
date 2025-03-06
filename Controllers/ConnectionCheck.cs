@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
+using AgoraIO.Media;
 using BATTARI_api.Models.DTO;
 using BATTARI_api.Repository;
 using BATTARI_api.Services;
@@ -11,7 +12,8 @@ namespace BATTARI_api.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class DeveloperController(IConfiguration configuration, UserOnlineConcurrentDictionaryDatabase userOnlineConcurrentDictionaryDatabase, CallingService callingService, ISouguuService souguuService) : ControllerBase
+public class DeveloperController
+(IConfiguration configuration, UserOnlineConcurrentDictionaryDatabase userOnlineConcurrentDictionaryDatabase, CallingService callingService, ISouguuService souguuService) : ControllerBase
 {
     /// <summary>
     /// ログインしてないと使えません
@@ -36,6 +38,17 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
         return Ok("Connection is working. Welcome " + claim?.Value + "!");
     }
 
+    [HttpGet]
+    public IActionResult GetAgoraToken(String channelId, int uid)
+    {
+
+        AccessToken accessToken =
+            new AccessToken(configuration["Agora:AppId"] ?? throw new ArgumentNullException("AppIdがappsettings.jsonに設定されていません。,"), configuration["Agora:AppCertificate"] ?? throw new ArgumentNullException("AppCertificateがappsettings.jsonに設定されていません。"),
+                            channelId, uid.ToString());
+        string result = accessToken.Build();
+        return Ok(result);
+    }
+
     /// <summary>
     ///
     /// </summary>
@@ -44,17 +57,17 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
     public IActionResult JwtParse(String input)
     {
         var jsonToken = new JwtSecurityTokenHandler().ReadToken(input);
-        
+
         return Ok(jsonToken);
     }
-    
+
     /// <summary>
     ///
     /// </summary>
     [HttpPost]
     public IActionResult TryParseSouguuMaterials(string materials)
     {
-            
+
         Console.WriteLine(materials);
         var souguuMaterials = JsonSerializer.Deserialize<SouguuWebsocketDto>(materials);
         Console.WriteLine("TryParseSouguuMaterials");
@@ -67,7 +80,7 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
 
         return Ok(null);
     }
-    
+
     [HttpGet]
     public IActionResult GetOnlineUsers()
     {
@@ -81,7 +94,7 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
         callingService.Clear();
         return Ok("UserOnlineDictionary is cleared");
     }
-    
+
     [HttpGet]
     public IActionResult IsUserSouguu(int userId)
     {
@@ -92,12 +105,10 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
     public async Task<IActionResult> GetFriendsAndOnlineUsers(int userId)
     {
         Random random = new Random();
-        var friends = (await userOnlineConcurrentDictionaryDatabase.GetFriendAndOnlineUsers(userId)).OrderBy(
-            (_) => random.Next());
+        var friends = (await userOnlineConcurrentDictionaryDatabase.GetFriendAndOnlineUsers(userId)).OrderBy((_) => random.Next());
         return Ok(friends);
-
     }
-    
+
     [HttpGet]
     [AllowAnonymous]
     public IActionResult GetSouguuIncredients()
@@ -112,7 +123,7 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
         souguuService.ForceSouguu(user1, user2);
         return Ok();
     }
-    
+
     [HttpGet]
     [AllowAnonymous]
     public IActionResult RemoveUserOnline(int userId)
@@ -120,7 +131,7 @@ public class DeveloperController(IConfiguration configuration, UserOnlineConcurr
         userOnlineConcurrentDictionaryDatabase.RemoveUserOnline(userId);
         return Ok();
     }
-    
+
     [HttpGet]
     [AllowAnonymous]
     public IActionResult RemoveUserSouguu(int userId)
