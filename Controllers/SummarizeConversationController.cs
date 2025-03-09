@@ -6,7 +6,7 @@ namespace BATTARI_api.Controllers;
 
 [Route("[controller]/[action]")]
 [ApiController]
-[Authorize]
+[AllowAnonymous]
 public class SummarizeConversationController : ControllerBase
 {
     [HttpPost]
