@@ -55,13 +55,15 @@ public class CallingService
     private Task _autoRemover;
     private readonly ILogger<CallingService> _logger;
     private readonly UserOnlineConcurrentDictionaryDatabase _onlineConcurrentDictionaryDatabase;
+    private readonly AgoraCloudRecordingService _agoraCloudRecordingService;
 
-    public CallingService(IConfiguration configuration, ILogger<CallingService> logger, UserOnlineConcurrentDictionaryDatabase onlineConcurrentDictionaryDatabase)
+    public CallingService(IConfiguration configuration, ILogger<CallingService> logger, UserOnlineConcurrentDictionaryDatabase onlineConcurrentDictionaryDatabase, AgoraCloudRecordingService agoraCloudRecordingService)
     {
         _userOnlineConcurrentDictionaryDatabase = new ConcurrentDictionary<int, NowCallModel>();
         _onlineConcurrentDictionaryDatabase = onlineConcurrentDictionaryDatabase;
         _configuration = configuration;
         _logger = logger;
+        _agoraCloudRecordingService = agoraCloudRecordingService;
         CreateAutoRemover();
     }
 
@@ -100,7 +102,7 @@ public class CallingService
     /// <param name="cancellationReason"></param>
     /// <param name="souguuDateTime"></param>
     /// <returns>配列{channelId, user1Token, user2Token)</returns>
-    public string[] AddCall(int callId, DateTime callStartTime, DateTime callEndTime, string souguuReason, int user1, int user2, string cancellationReason, DateTime souguuDateTime)
+    public async Task<string[]> AddCall(int callId, DateTime callStartTime, DateTime callEndTime, string souguuReason, int user1, int user2, string cancellationReason, DateTime souguuDateTime)
     {
         Console.WriteLine(callId);
         string callIdStr = callId.ToString();
@@ -110,6 +112,19 @@ public class CallingService
             string user1Token = _generateToken(user1.ToString(), callIdStr);
             string user2Token = _generateToken(user2.ToString(), callIdStr);
             _userOnlineConcurrentDictionaryDatabase.TryAdd(callId, new NowCallModel(callStartTime, callId, callEndTime, souguuReason, user1, user1Token, user2, user2Token, cancellationReason, souguuDateTime));
+
+            try
+            {
+                var resourceId = await _agoraCloudRecordingService.GetResource(callIdStr);
+                var sid = await _agoraCloudRecordingService.StartRecording(resourceId, callIdStr);
+                await _agoraCloudRecordingService.SetSid(sid, callId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("failed to start recording");
+                SentrySdk.CaptureException(e);
+            }
+            
             return new[] { callIdStr, user1Token, user2Token };
         }
         catch (Exception e)

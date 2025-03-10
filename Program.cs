@@ -72,10 +72,12 @@ builder.Services.AddScoped<IRefreshTokensRepository, RefreshTokenDatabase>();
 builder.Services.AddSingleton<IFriendRepository, FriendDatabase>();
 builder.Services.AddSingleton<UserOnlineConcurrentDictionaryDatabase>();
 builder.Services.AddScoped<ICallRepository, CallDatabase>();
+builder.Services.AddScoped<ISummarizeConversationDatabase, SummarizeConversationDatabase>();
 // Service
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<ISouguuService, SouguuService>();
 builder.Services.AddSingleton<CallingService>();
+builder.Services.AddSingleton<AgoraCloudRecordingService>();
 
 builder.Services.AddSwaggerGen(c =>
                                {

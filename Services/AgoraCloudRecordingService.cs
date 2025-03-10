@@ -3,10 +3,11 @@ using System.Text;
 using System.Text.Json;
 using AgoraIO.Media;
 using BATTARI_api.Models.DTO.Agora;
+using BATTARI_api.Repository;
 
 namespace BATTARI_api.Services;
 
-public class AgoraCloudRecordingService(IConfiguration _configuration)
+public class AgoraCloudRecordingService(IConfiguration _configuration, ISummarizeConversationDatabase summarizeConversationDatabase)
 {
     const String uid = "1000";
     public async Task<String> GetResource(String channel)
@@ -39,6 +40,12 @@ public class AgoraCloudRecordingService(IConfiguration _configuration)
         var todo = await response.Content.ReadFromJsonAsync<AgoraAqcuireDto>();
         return todo.ResourceId;
     }
+    
+    public async Task SetSid(String sid, int callId)
+    {
+        await summarizeConversationDatabase.SetSid(sid, callId);
+    }
+
 
     /// <summary>
     /// 
