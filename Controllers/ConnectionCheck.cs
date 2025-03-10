@@ -39,6 +39,13 @@ public class DeveloperController
     }
 
     [HttpGet]
+    public IActionResult Test()
+    {
+        Console.WriteLine("GCP : " + configuration["Gcs:Bucket"] + ", " + configuration["Gcs:AccessKey"] + ", " + configuration["Gcs:SecretKey"]);
+        return Ok();
+    }
+
+    [HttpGet]
     public IActionResult GetAgoraToken(String channelId, int uid)
     {
 

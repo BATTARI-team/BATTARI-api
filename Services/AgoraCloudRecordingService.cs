@@ -30,6 +30,8 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
         var appid = _configuration["Agora:AppId"];
         var apiKey = _configuration["Agora:AgoraRestApiKey"];
         
+        Console.WriteLine("appId: " + appid+ ", apiKey: " + apiKey + ", channel: " + channel);
+        
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"https://api.agora.io/v1/apps/{appid}/cloud_recording/acquire"); //Replace "YOUR_ENDPOINT_HERE"
         request.Content = jsonContent;
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", apiKey);
@@ -68,7 +70,7 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
                 uid = uid,
                 clientRequest = new
                 {
-                    token = _generateToken(int.Parse(uid), channel),
+                    token = _generateToken(uid, channel),
                     recordingConfig = new
                     {
                         maxIdleTime = 1,
@@ -98,10 +100,11 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
         
         var recordingDto = await response.Content.ReadFromJsonAsync<AgoraStartRecordingDto>();
         Console.WriteLine("Recording started with sid: " + recordingDto.sid);
+        Console.WriteLine("GCP : " + _configuration["Gcs:Bucket"] + ", " + _configuration["Gcs:AccessKey"] + ", " + _configuration["Gcs:SecretKey"]);
         return recordingDto.sid;
     }
     
-    private string _generateToken(int uid, string channelId)
+    private string _generateToken(String uid, string channelId)
     {
         AccessToken accessToken = new AccessToken(_configuration["Agora:AppID"], _configuration["Agora:AppCertificate"], channelId, uid.ToString());
         var result = accessToken.Build();
