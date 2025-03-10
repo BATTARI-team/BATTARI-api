@@ -72,7 +72,7 @@ builder.Services.AddScoped<IRefreshTokensRepository, RefreshTokenDatabase>();
 builder.Services.AddSingleton<IFriendRepository, FriendDatabase>();
 builder.Services.AddSingleton<UserOnlineConcurrentDictionaryDatabase>();
 builder.Services.AddScoped<ICallRepository, CallDatabase>();
-builder.Services.AddScoped<ISummarizeConversationDatabase, SummarizeConversationDatabase>();
+builder.Services.AddSingleton<ISummarizeConversationDatabase, SummarizeConversationDatabase>();
 // Service
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<ISouguuService, SouguuService>();

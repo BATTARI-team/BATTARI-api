@@ -13,8 +13,9 @@ public interface ISummarizeConversationDatabase
     public Task<IEnumerable<SummarizationResultDto>> GetSummarizationResult(int userIndex);
 }
 
-public class SummarizeConversationDatabase(UserContext context, ICallRepository _callRepository) : ISummarizeConversationDatabase
+public class SummarizeConversationDatabase(IServiceScopeFactory serviceScopeFactory) : ISummarizeConversationDatabase
 {
+    private readonly UserContext context = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<UserContext>();
     public async Task PutSummarizationResult(SummarizeConversationDto dto)
     {
             try
