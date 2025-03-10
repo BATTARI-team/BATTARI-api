@@ -73,7 +73,8 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
                     recordingConfig = new
                     {
                         maxIdleTime = 1,
-                        streamTypes = 0
+                        streamTypes = 0,
+                        audioProfile = 2
                     },
                     recordingFileConfig = new
                     {
