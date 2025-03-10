@@ -69,7 +69,7 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
                     token = _generateToken(int.Parse(uid), channel),
                     recordingConfig = new
                     {
-                        maxIdleTime = 30,
+                        maxIdleTime = 1,
                         streamTypes = 0
                     },
                     recordingFileConfig = new
