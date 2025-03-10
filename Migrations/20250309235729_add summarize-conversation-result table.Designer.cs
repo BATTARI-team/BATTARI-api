@@ -4,6 +4,7 @@ using BATTARI_api.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BATTARI_api.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20250309235729_add summarize-conversation-result table")]
+    partial class addsummarizeconversationresulttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,8 +65,11 @@ namespace BATTARI_api.Migrations
 
             modelBuilder.Entity("BATTARI_api.Models.Data.SummarizationResultModel", b =>
                 {
-                    b.Property<string>("Sid")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Sid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Sid"));
 
                     b.Property<int>("CallId")
                         .HasColumnType("int");

@@ -10,6 +10,7 @@ public class UserContext(IConfiguration configuration) : DbContext
     public DbSet<FriendModel> Friends { get; set; }
     public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
     public DbSet<CallModel> Calls { get; set; }
+    public DbSet<SummarizationResultModel> SummarizationResults { get; set; }
 
     protected override void
     OnConfiguring(DbContextOptionsBuilder optionsBuilder)

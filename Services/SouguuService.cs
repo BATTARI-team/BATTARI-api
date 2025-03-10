@@ -184,7 +184,7 @@ public class SouguuService : ISouguuService
                 souguuReason: reasonStr, callStartTime: DateTime.Now.AddSeconds(15),
                 user1: user1, user2: user2, souguuDateTime: DateTime.Now,
                 status: CallStatusEnum.Waiting);
-            callDetail = _callingService.AddCall(
+            callDetail = await  _callingService.AddCall(
                 callId: call.CallId, callStartTime: call.CallStartTime,
                 callEndTime: call.CallStartTime.AddMinutes(call.CallTime),
                 souguuReason: call.SouguuReason, user1: call.User1Id,
