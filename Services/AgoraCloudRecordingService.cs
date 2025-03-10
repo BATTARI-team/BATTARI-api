@@ -37,11 +37,13 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
         HttpResponseMessage response = await client.SendAsync(request);
         
         var todo = await response.Content.ReadFromJsonAsync<AgoraAqcuireDto>();
+        Console.WriteLine("Resource acquired with resourceId: " + todo.ResourceId);
         return todo.ResourceId;
     }
     
     public async Task SetSid(String sid, int callId)
     {
+        Console.WriteLine("Setting sid: " + sid + ", callId:" + callId);
         await summarizeConversationDatabase.SetSid(sid, callId);
     }
 
@@ -95,6 +97,7 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
         HttpResponseMessage response = await client.SendAsync(request);
         
         var recordingDto = await response.Content.ReadFromJsonAsync<AgoraStartRecordingDto>();
+        Console.WriteLine("Recording started with sid: " + recordingDto.sid);
         return recordingDto.sid;
     }
     
