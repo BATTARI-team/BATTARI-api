@@ -9,7 +9,6 @@ namespace BATTARI_api.Services;
 
 public class AgoraCloudRecordingService(IConfiguration _configuration, ISummarizeConversationDatabase summarizeConversationDatabase)
 {
-    const String uid = "1000";
     public async Task<String> GetResource(String channel)
     {
         HttpClient client = new HttpClient();
@@ -17,7 +16,7 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
             JsonSerializer.Serialize(new
             {
                 cname = channel,
-                uid = uid,
+                uid = channel,
                 clientRequest = new
                 {
                     resourceExpiredHour = 24,
@@ -67,10 +66,10 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
             JsonSerializer.Serialize(new
             {
                 cname = channel,
-                uid = uid,
+                uid = channel,
                 clientRequest = new
                 {
-                    token = _generateToken(uid, channel),
+                    token = _generateToken(channel, channel),
                     recordingConfig = new
                     {
                         maxIdleTime = 1,
