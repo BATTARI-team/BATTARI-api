@@ -35,7 +35,6 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", apiKey);
 
         HttpResponseMessage response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
         
         var todo = await response.Content.ReadFromJsonAsync<AgoraAqcuireDto>();
         return todo.ResourceId;
@@ -94,7 +93,6 @@ public class AgoraCloudRecordingService(IConfiguration _configuration, ISummariz
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", apiKey);
 
         HttpResponseMessage response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
         
         var recordingDto = await response.Content.ReadFromJsonAsync<AgoraStartRecordingDto>();
         return recordingDto.sid;
